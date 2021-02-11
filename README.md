@@ -1,4 +1,4 @@
-# Todo List with React
+# Todo List with React and Fetch
 
 > For 4Geeks Academy
 

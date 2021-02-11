@@ -1,12 +1,14 @@
 import PropTypes from 'prop-types'
 
-const TodoBottom = ({ taskLength }) => {
+const TodoBottom = ({ isLoading, taskLength }) => {
     return (
         <div className="todoListBottom">
             <span className="todoListCount">
-                { !taskLength
-                ? "No tasks, add a task"
-                : `${taskLength} ${taskLength > 1 ? "items" : "item"} left`
+                { isLoading 
+                ? "Loading..."
+                : !taskLength
+                    ? "No tasks, add a task"
+                    : `${taskLength} ${taskLength > 1 ? "items" : "item"} left`
                 }
             </span>
         </div>
@@ -14,6 +16,7 @@ const TodoBottom = ({ taskLength }) => {
 }
 
 TodoBottom.propTypes = {
+    isLoading: PropTypes.bool,
     taskLength: PropTypes.number
 }
 

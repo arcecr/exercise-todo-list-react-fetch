@@ -1,5 +1,4 @@
 import { Component } from 'react'
-import { nanoid } from 'nanoid';
 
 import './Todos.css'
 
@@ -16,38 +15,84 @@ export default class Todos extends Component {
         this.removeTask = this.removeTask.bind(this)
 
         this.state = {
-            taskList: []
+            taskList: [],
+            isLoading: false
         }
     }
 
-    addTask(task) {
+    addOrUpdateService(taskList) {
         this.setState({
-            taskList: [
-                ...this.state.taskList,
-                {
-                    id: nanoid(),
-                    name: task
-                }
-            ]
+            isLoading: true
         })
+        const urlApi = "https://assets.breatheco.de/apis/fake/todos/user/arcecr";
+        fetch(urlApi, {
+            method: 'PUT',
+            body: JSON.stringify(taskList),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then( 
+            () => {
+                this.setState({
+                    taskList,
+                    isLoading: false
+                });
+            },
+            (error) => {
+                console.log(error)
+            }
+        )
     }
 
-    removeTask(id) {
-        const newTaskList = this.state.taskList.filter(task => task.id !== id);
+    componentDidMount() {
         this.setState({
-            taskList: newTaskList
-        })
+            isLoading: true
+        });
+
+        fetch("https://assets.breatheco.de/apis/fake/todos/user/arcecr")
+        .then(res => res.json())
+        .then(
+            (tasks) => {
+                this.setState({
+                    taskList: tasks,
+                    isLoading: false
+                });
+            },
+            (error) => {
+                console.log(error);
+            } 
+        )
+    }
+
+    addTask(task) {
+        const newTaskList = [
+            ...this.state.taskList,
+            {
+                label: task,
+                done: false
+            },
+        ]
+
+        this.addOrUpdateService(newTaskList);
+    }
+
+    removeTask(label) {
+        const newTaskList = this.state.taskList.filter(task => task.label !== label);
+
+        this.addOrUpdateService(newTaskList);
     }
 
     render() {
-        const { taskList } = this.state;
+        const { isLoading, taskList } = this.state;
 
         return (
             <div className="todoApp">
                 <TodoTitle title="todos" />
                 <TodoInput onAdd={this.addTask} />
                 <TodoList tasks={taskList} onRemove={this.removeTask} />
-                <TodoBottom taskLength={taskList.length} />
+                <TodoBottom isLoading={isLoading} taskLength={taskList.length} />
             </div>
         )
     }

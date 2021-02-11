@@ -5,8 +5,8 @@ import TodoListItem from './TodoListItem'
 const TodoList = ({ tasks, onRemove }) => {
     return (
         <ul className="todoList">
-            {tasks.map(task => {
-                return <TodoListItem key={task.id} task={task} onRemove={onRemove} />
+            {tasks.map((task, i) => {
+                return <TodoListItem key={i} task={task} onRemove={onRemove} />
             })}
         </ul>
     )
